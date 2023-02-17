@@ -1,6 +1,6 @@
 from .iLink import iLink
 from .Taobao_World_store import Taobao_World_store_Link
-from Taobao.Utils.https_prefix import add_https_prefix
+from ..Utils.https_prefix import add_https_prefix
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from googletrans import Translator

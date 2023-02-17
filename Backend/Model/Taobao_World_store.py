@@ -1,6 +1,7 @@
 from .iLink import iLink
 from .iStore import iStore
 from bs4 import BeautifulSoup
+from googletrans import Translator
 import re
 import requests
 import json
@@ -15,6 +16,16 @@ class Taobao_World_store(iLink,iStore):
 
     def __init__(self, url, store_name=""):
         super(store_name)
+        self._store_id = self.__set_store_id_by_url(url)
+        self.__url = url
+        self.__soup = self._set_soup(url)
+        self.__page__number = self.__set_number_of_page()
+        self.__url_list = self.__set_url_list(url)
+        self.__total_items = self.__set_total_items()
+        self.__item_url_list = self.__set_item_url_list()
+
+    def __init__(self, url):
+        super(self.__set_store_name_by_souping(url))
         self._store_id = self.__set_store_id_by_url(url)
         self.__url = url
         self.__soup = self._set_soup(url)
@@ -43,6 +54,10 @@ class Taobao_World_store(iLink,iStore):
             number = match.group(1)
             return number
         return None
+    
+    def __set_store_name_by_souping(self, url):
+        element = self.__soup.find(class_='info-name')
+        return "hehe"
 
     def __set_url_list(self,url):
         url_list = [url]
@@ -93,7 +108,6 @@ class Taobao_World_store(iLink,iStore):
     
     def get_item_url_list(self):
         return self.__item_url_list
-        
     
     def get_store(self):
         return {
