@@ -2,8 +2,10 @@ from googletrans import Translator
 import sys
 sys.path.insert(0, '..')
 
-from ..Model.Taobao_World_store import Taobao_World_store
+from Controller.store_controller import StoreController
 
-store = Taobao_World_store('https://world.taobao.com/dianpu/142967287.htm')
+# store = StoreController().scrap_store()
 
-print(store.get_store())
+# store = StoreController().get_store_by_id()
+
+store = StoreController().delete_store_by_id()

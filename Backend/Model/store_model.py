@@ -14,7 +14,7 @@ class StoreModel:
         return str(result.inserted_id)
     
     def get_store_by_id(self, store_id):
-        query = {'store_id': store_id}
+        query = {"store_id": store_id}
         return self.collection.find_one(query)
     
     def update_store_by_id(self, store_id, update_data):
@@ -35,6 +35,10 @@ class StoreModel:
         query = {"name": {"$regex": name, "$options": "i"}}
         stores = self.collection.find(query)
         return [store for store in stores]
+    
+    def get_all_stores(self):
+        return self.collection.find()
+    
     
     
     

@@ -15,20 +15,20 @@ class Taobao_World_store(iLink,iStore):
     __item_url_list = []
 
     def __init__(self, url, store_name=""):
-        super(store_name)
+        self.__soup = self._set_soup(url)
+        super().__init__(store_name)
         self._store_id = self.__set_store_id_by_url(url)
         self.__url = url
-        self.__soup = self._set_soup(url)
         self.__page__number = self.__set_number_of_page()
         self.__url_list = self.__set_url_list(url)
         self.__total_items = self.__set_total_items()
         self.__item_url_list = self.__set_item_url_list()
 
     def __init__(self, url):
-        super(self.__set_store_name_by_souping(url))
+        self.__soup = self._set_soup(url)
+        super().__init__(self.__set_store_name_by_souping(url))
         self._store_id = self.__set_store_id_by_url(url)
         self.__url = url
-        self.__soup = self._set_soup(url)
         self.__page__number = self.__set_number_of_page()
         self.__url_list = self.__set_url_list(url)
         self.__total_items = self.__set_total_items()
@@ -40,7 +40,10 @@ class Taobao_World_store(iLink,iStore):
         return self.__url
 
     def get_store_name(self):
-        return self.__store_name
+        return self._store_name
+    
+    def get_store_id(self):
+        return self._store_id
 
     def _set_soup(self, url):
         response = requests.get(url)
@@ -57,7 +60,8 @@ class Taobao_World_store(iLink,iStore):
     
     def __set_store_name_by_souping(self, url):
         element = self.__soup.find(class_='info-name')
-        return "hehe"
+        name = element.text
+        return name
 
     def __set_url_list(self,url):
         url_list = [url]
@@ -68,10 +72,15 @@ class Taobao_World_store(iLink,iStore):
 
     # set number of page
     def __set_number_of_page(self):
-        element = self.__soup.find(class_='pagination-box')
-        text = element.find(class_='text-end').text
-        number = int(list(filter(str.isdigit, text))[0]) 
-        return number
+        try:
+            element = self.__soup.find(class_='pagination-box')
+            text = element.find(class_='text-end').text
+            number = int(list(filter(str.isdigit, text))[0])
+            return number
+        except AttributeError:
+            print("There might be something wrong with the URL")
+            return None
+
     
     # set number of items
     def __set_total_items(self):
@@ -111,7 +120,8 @@ class Taobao_World_store(iLink,iStore):
     
     def get_store(self):
         return {
-           "url": self.get_url(),
+            "store_id": self.get_store_id(),
+            "url": self.get_url(),
             "url_list": self.get_url_list(),
             "store_name" : self.get_store_name(),
             "page__number" : self.get_page_number(),

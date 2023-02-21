@@ -35,7 +35,7 @@ class App:
         self.collections_label.config(text=f"Collections in {selected_db}:\n{', '.join(collections)}")
 
 
-if __name__ == "__main__":
-    root = tk.Tk()
-    app = App(root)
-    root.mainloop()
+# if __name__ == "__main__":
+#     root = tk.Tk()
+#     app = App(root)
+#     root.mainloop()

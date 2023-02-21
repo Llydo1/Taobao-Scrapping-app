@@ -1,6 +1,6 @@
 from .iLink import iLink
-from .Taobao_World_store import Taobao_World_store_Link
-from ..Utils.https_prefix import add_https_prefix
+from .Taobao_World_store import Taobao_World_store
+from Utils.https_prefix import add_https_prefix
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from googletrans import Translator
@@ -10,17 +10,22 @@ import json
 translator = Translator()
 
 class Taobao_World_item(iLink):
+    __product_id = ""
+    __store_id = ""
     __url =""
-    __store: Taobao_World_store_Link = ""
+    __store: Taobao_World_store = ""
     __soup =""
-    __colors = []
-    __images = []
-    __detail_images = []
+    __colors: list = []
+    __images: list = []
+    __detail_images: list = []
     __price = ""
     __current_price = ""
-    __detail_information = {}
+    __detail_information: dict = {}
 
-    def __init__(self, url, store = None):
+    # init with store_id
+    def __init__(self, url, product_id, store_id, store = None):
+        self.__product_id = product_id
+        self.__store_id = store_id
         self.__url = url
         self.__store = store
         self.__soup = self._set_soup(url)
@@ -33,10 +38,14 @@ class Taobao_World_item(iLink):
             self.__price = self.__current_price
         self.__detail_information = self.__set_detail_information()
 
-    def __init__(self, data: json) -> None:
-        super().__init__()
 
 # ---------Override function--------- #
+    def get_product_id(self):
+        return self.__product_id
+    
+    def get_store_id(self):
+        return self.__store_id
+    
     def get_store_name(self):
         return self.__store.get_store_name()
 
@@ -127,8 +136,9 @@ class Taobao_World_item(iLink):
     
     def get_item(self):
         return {
+            "product_id" : self.get_product_id(),
+            "store_id": self.get_store_id(),
             "url": self.get_url(),
-            "store": self.get_store(),
             "colors" : self.get_colors(),
             "images" : self.get_images(),
             "detail_images" : self.get_detail_images(),
