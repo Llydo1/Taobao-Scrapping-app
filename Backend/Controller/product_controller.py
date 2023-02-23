@@ -33,8 +33,8 @@ class ProductController:
             url_object = url_queue.get()
             index = url_object["index"]
             url = url_object["url"]
-            # try:   
-            if True:        
+            try:   
+            # if True:        
                 # Do web scraping on url
                 # If success, print a tick symbol and increase the successful count
                 # If failure, print an x symbol and put the url back in the url
@@ -49,26 +49,17 @@ class ProductController:
                         print(f"✔ Lưu {success_count}/{number_of_product} sản phẩm thành công, ID:" + product_id)
                     else:
                         print(f"✘ Lưu sản phẩm thất bại....")  
-                        if url not in retries:
-                            retries[url] = 1
-                            url_queue.put(url)
-                        else:
-                            retries[url] += 1
-                            if retries[url] == 3:
-                                print(f"Giving up on {url}.")                      
+                        retry_count(url_queue, retries,url)                    
+                     
                 else:
                     print("✘ Cào thất bại {}. Thử lại sau...".format(url))
-                    url_queue.put(url_object)
-            # except Exception as e:
-            #     print(f"Đã có lỗi xảy ra {url}: {e}")
-            #     if url not in retries:
-            #         retries[url] = 1
-            #         url_queue.put(url)
-            #     else:
-            #         retries[url] += 1
-            #         if retries[url] == 3:
-            #             print(f"Giving up on {url}.")
+                    retry_count(url_queue, retries,url)                    
+            except Exception as e:
+                print(f"Đã có lỗi xảy ra {url}: {e}")
+                retry_count(url_queue, retries,url)        
             time.sleep(1) 
+
+
 
     def scrap_item_with_url_list_multi_thread(self, store_id, url_list):
         num_threads = 4  # Number of threads to use
@@ -77,10 +68,7 @@ class ProductController:
         for index, url in enumerate(url_list):
             url = {"url" : url, "index": index}
             url_queue.put(url)
-
         success_count = 0
-        
-
         print("Có tất cả {} sản phẩm để cào".format(number_of_product))
 
         def worker(url_queue_chunk:Queue): 
@@ -109,20 +97,14 @@ class ProductController:
                             retry_count(url_queue_chunk, retries,url )                    
                     else:
                         print("✘ Cào thất bại {}. Thử lại sau...".format(url))
-                        retry_count(url_queue_chunk, retries,url )                    
+                        retry_count(url_queue_chunk, retries,url)                    
                 except Exception as e:
                     print(f"Đã có lỗi xảy ra {url}: {e}")
                     retry_count(url_queue_chunk, retries,url )
                 time.sleep(1) 
 
-        def retry_count(url_queue:Queue, retries_list:dict, url ):
-            if url not in retries_list:
-                retries_list[url] = 1
-                url_queue.put(url)
-            else:
-                retries_list[url] += 1
-                if retries_list[url] == 3:
-                    print(f"Giving up on {url}.")
+        # Count number of retries for each url
+
             
         threads = []
         chunk_size = len(url_list) // num_threads
@@ -142,5 +124,13 @@ class ProductController:
         for thread in threads:
             thread.join()
 
-        
 
+    
+def retry_count(url_queue:Queue, retries_list:dict, url ):
+    if url not in retries_list:
+        retries_list[url] = 1
+        url_queue.put(url)
+    else:
+        retries_list[url] += 1
+        if retries_list[url] == 3:
+            print(f"Giving up on {url}.")

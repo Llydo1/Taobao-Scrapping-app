@@ -5,6 +5,11 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from googletrans import Translator
 import json
+import time
+
+# Disable the warning message from Chrome
+options = webdriver.ChromeOptions()
+options.add_experimental_option('excludeSwitches', ['enable-logging']) 
 
 
 translator = Translator()
@@ -29,7 +34,10 @@ class Taobao_World_item(iLink):
         self.__url = url
         self.__store = store
         self.__soup = self._set_soup(url)
-        self.__colors = self.__set_colors()
+        try:
+            self.__colors = self.__set_colors()
+        except:
+            pass
         self.__images = self.__set_images()
         self.__detail_images = self.__set_detail_images()
         self.__current_price = self.__set_current_price()
@@ -54,17 +62,14 @@ class Taobao_World_item(iLink):
 
     def _set_soup(self, url):
         # Create a webdriver object using the Chrome driver
-        driver = webdriver.Chrome()
-
+ 
+        driver = webdriver.Chrome(options=options)
         # Navigate to a URL
         driver.get(url)
-
         # Scroll down 500 pixels
         driver.execute_script("window.scrollBy(0, 500);")
-
         # Get the HTML source of the page after scrolling
         html = driver.page_source
-
         # Close the webdriver
         driver.quit() 
         return BeautifulSoup(html, 'html.parser')
@@ -77,6 +82,7 @@ class Taobao_World_item(iLink):
         for element in sku_right:
             translate_text = translator.translate(element.div.text)
             color_list.append(translate_text.text)
+            time.sleep(1)
         return color_list
 
     def __set_images(self):

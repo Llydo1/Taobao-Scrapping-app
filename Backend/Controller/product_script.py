@@ -7,4 +7,4 @@ from Controller.product_controller import ProductController
 
 store_id, url_list = StoreController().scrap_store()
 
-ProductController("mongodb://localhost:27017/", "store", str(store_id)).scrap_item_with_url_list(str(store_id),url_list)
+ProductController("mongodb://localhost:27017/", "store", str(store_id)).scrap_item_with_url_list_multi_thread(str(store_id),url_list)
