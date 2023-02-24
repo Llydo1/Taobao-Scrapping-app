@@ -1,6 +1,7 @@
 import sys
 import tty
 import termios
+import os, time
 
 def option1():
     global result
@@ -36,14 +37,9 @@ def get_key():
     finally:
         termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
     return ch
-
+print("Choose an option:")
 while True:
-    print("Choose an option:")
-    print("1. Option 1")
-    print("2. Option 2")
-    print("3. Option 3")
-    print("4. Option 4")
-    print("5. Exit")
+    
 
     if current_choice == 1:
         print("\033[7m1. Option 1\033[0m")
@@ -71,6 +67,7 @@ while True:
         key = get_key()
         if key == "\033":
             # Arrow key was pressed
+            print("hehe")
             key = get_key()
             if key == "[":
                 # Arrow key sequence continues
@@ -84,9 +81,14 @@ while True:
         elif key == "\r":
             # Enter key
             choice = str(current_choice)
+            print("hehehe")
+        print(key)
+        break
 
     if choice == "1":
+        print("hehe")
         option1()
+        time.sleep(5)
     elif choice == "2":
         option2()
     elif choice == "3":
@@ -95,5 +97,4 @@ while True:
         option4()
     elif choice == "5":
         break
-    else:
-        print("Invalid choice. Please try again.")
+
