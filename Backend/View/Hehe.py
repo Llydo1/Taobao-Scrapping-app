@@ -1,51 +1,35 @@
-import curses
 import sys
 sys.path.insert(0, '..')
+import PySimpleGUI as sg
 from Controller.product_controller import ProductController
 from Controller.store_controller import StoreController
-import time
 
 options = ["Option 1", "Option 2", "Option 3", "Option 4", "Exit"]
-selected_option = 0
 
-def display_options(stdscr):
-    stdscr.clear()
-    for i, option in enumerate(options):
-        prefix = "> " if i == selected_option else "  "
-        stdscr.addstr(i, 0, prefix + option)
-    stdscr.addstr("\n")
-    stdscr.refresh()
+layout = [
+    [sg.Text("Select an option:")],
+    [sg.Listbox(values=options, size=(30, 6), key="-OPTIONS-")],
+    [sg.Button("Ok"), sg.Button("Exit")],
+]
 
-def select_option(stdscr):
-    global selected_option
+def main():
+    window = sg.Window("Menu", layout)
     while True:
-        key = stdscr.getch()
-        if key == curses.KEY_UP:
-            selected_option = (selected_option - 1) % len(options)
-        elif key == curses.KEY_DOWN:
-            selected_option = (selected_option + 1) % len(options)
-        elif key == ord('\n'):
-            selected = options[selected_option]
-            if selected == "Exit":
-                return False
-            option_controller(stdscr,selected)
-            stdscr.addstr(len(options) + 1, 0, "Selected option: " + selected)
-            stdscr.refresh()
-            stdscr.getch()
-        display_options(stdscr)
-
-def option_controller(stdscr, selected):
-    store_controller = StoreController(stdscr)
-    stdscr.addstr("\nbinbin")
-    time.sleep(1)
-    store_controller.scrap_store()
-
-
-def main(stdscr):
-    curses.curs_set(0)
-    while True:
-        display_options(stdscr)
-        if not select_option(stdscr):
+        event, values = window.read()
+        if event == sg.WIN_CLOSED or event == "Exit":
             break
+        elif event == "Ok":
+            selected_option = values["-OPTIONS-"][0]
+            if selected_option == "Exit":
+                break
+            elif selected_option == "Option 1":
+                controller = StoreController()
+                selected_option = controller.scrap_store(window)
+                if selected_option is not None:
+                    sg.popup("Scraped store successfully!", "ID: " + selected_option[0], "Item URL list: " + str(selected_option[1]))
+                else:
+                    sg.popup_error("Scraping store failed!")
+    window.close()
 
-curses.wrapper(main)
+if __name__ == "__main__":
+    main()
