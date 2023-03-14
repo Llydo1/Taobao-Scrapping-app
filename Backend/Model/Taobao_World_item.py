@@ -37,10 +37,12 @@ class Taobao_World_item(iLink):
         try:
             self.__colors = self.__set_colors()
         except:
+            self.__colors = None
             pass
         self.__images = self.__set_images()
-        self.__detail_images = self.__set_detail_images()
+        self.__detail_images = self.__set_detail_images()            
         self.__current_price = self.__set_current_price()
+        
         self.__price = self.__set_price()
         if(self.__price == "None"):
             self.__price = self.__current_price
@@ -67,7 +69,7 @@ class Taobao_World_item(iLink):
         # Navigate to a URL
         driver.get(url)
         # Scroll down 500 pixels
-        driver.execute_script("window.scrollBy(0, 500);")
+        driver.execute_script("window.scrollBy(0, 1000);")
         # Get the HTML source of the page after scrolling
         html = driver.page_source
         # Close the webdriver
@@ -76,12 +78,15 @@ class Taobao_World_item(iLink):
 
 
 # ---------Private setter functions--------- #
-    def __set_colors(self):
+    def __set_colors(self) -> list:
         color_list = []
         sku_right = (self.__soup.find(class_="sku-box")).find(class_="right-content").find_all(class_="property-item")
-        for element in sku_right:
+        sku_images = (self.__soup.find(class_="sku-box")).find(class_="right-content").find_all(class_="property-img")
+        for i in range(len(sku_right)):
+            element = sku_right[i]
             translate_text = translator.translate(element.div.text)
-            color_list.append(translate_text.text)
+            color_object = {translate_text.text: sku_images}
+            color_list.append(color_object)
             time.sleep(1)
         return color_list
 

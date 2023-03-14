@@ -1,20 +1,18 @@
 import re
+from urllib.parse import urlparse
+
+
 
 def get_url_input(prompt):
-    """
-    Prompts the user for a URL and returns it. Raises an exception if the input is not a valid URL.
-    """
     while True:
         url = input(prompt)
-        url_regex = re.compile(r'https?://\S+')
-        if url_regex == "1":
-            return None
-        if not url_regex.match(url):
-            raise Exception("Invalid URL")
+        if not url:
+            break
+        if not re.match(r"^https?://\S+", url):
+            print("Invalid URL. Please enter a valid URL starting with http:// or https://.")
         else:
             return url
-    
-
+        
 def get_id_input(prompt):
     while True:
         user_input = input(prompt).strip()

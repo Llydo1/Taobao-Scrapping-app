@@ -17,12 +17,16 @@ class StoreModel:
         query = {"store_id": store_id}
         return self.collection.find_one(query)
     
-    def update_store_by_id(self, store_id, update_data):
+    def __update_store_by_id(self, store_id, update_data):
         query = {'store_id': store_id}
         update = {'$set': update_data}
         result = self.collection.update_one(query, update)
         return result.modified_count
     
+    def update_store_name(self, store_id, new_name):
+        update_data = {'store_name': new_name}
+        return self.__update_store_by_id(store_id, update_data)
+
     def delete_store_by_id(self, store_id):
         query = {'store_id': store_id}
         result = self.collection.delete_one(query)

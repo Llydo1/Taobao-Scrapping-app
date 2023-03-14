@@ -13,15 +13,13 @@ class StoreController:
     def __init__(self) -> None:
         self.__store_model = StoreModel("mongodb://localhost:27017/", "store")
 
-    # scrap_store
-    # Return item_url_list for productController
-    def scrap_store(self) -> str:
+    def scrap_store_from_url(self) -> str:
         url = get_url_input("Nhập link taobao để cào:")
         store = None
 
         # Start scraping store
         try:
-            store = Factory().create_store(url)
+            store = Factory().create_store_with_url(url)
             print("Cào thành công, lưu store vào database...")
         except Exception as e:
             print(e)
@@ -29,15 +27,15 @@ class StoreController:
             return None
         store_id = store.get_store_id()
 
-        # Duplicated checked
-        duplicated = self.__store_model.get_store_by_id(store_id)
-        if duplicated is not None:
+        # is_duplicated checked
+        is_duplicated = self.__store_model.get_store_by_id(store_id)
+        if is_duplicated is not None:
             print("store_id đã tồn tại")
-            return store_id, duplicated["item_url_list"]
+            return store_id, is_duplicated["item_url_list"]
         
         # Create store to the database
-        result = (self.__store_model.create_store(store.get_store()))
-        if result is None:
+        save_store_to_db = (self.__store_model.create_store(store.get_store()))
+        if save_store_to_db is None:
             print("Lưu store thất bại")
             return None
         else:

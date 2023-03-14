@@ -24,16 +24,6 @@ class Taobao_World_store(iLink,iStore):
         self.__total_items = self.__set_total_items()
         self.__item_url_list = self.__set_item_url_list()
 
-    def __init__(self, url):
-        self.__soup = self._set_soup(url)
-        super().__init__(self.__set_store_name_by_souping(url))
-        self._store_id = self.__set_store_id_by_url(url)
-        self.__url = url
-        self.__page__number = self.__set_number_of_page()
-        self.__url_list = self.__set_url_list(url)
-        self.__total_items = self.__set_total_items()
-        self.__item_url_list = self.__set_item_url_list()
-        
     
 # ---------Override function--------- #
     def get_url(self):

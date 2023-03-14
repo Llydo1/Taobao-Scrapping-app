@@ -2,11 +2,11 @@ from Model.Taobao_World_store import Taobao_World_store
 from Model.Taobao_World_item import Taobao_World_item
 
 class Factory():
-    def create_store(self,url,store_name) -> Taobao_World_store:
+    def create_store_from_url_and_name(self,url,store_name) -> Taobao_World_store:
         store = Taobao_World_store(url, store_name)
         return store
         
-    def create_store(self,url) -> Taobao_World_store:
+    def create_store_with_url(self,url) -> Taobao_World_store:
         store = Taobao_World_store(url)
         return store    
 
